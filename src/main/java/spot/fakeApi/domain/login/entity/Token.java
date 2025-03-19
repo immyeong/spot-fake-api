@@ -1,4 +1,4 @@
-package spot.fakeApi.domain.login.token;
+package spot.fakeApi.domain.login.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

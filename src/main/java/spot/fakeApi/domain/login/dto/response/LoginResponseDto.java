@@ -1,9 +1,7 @@
 package spot.fakeApi.domain.login.dto.response;
 
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
 public record LoginResponseDto(
         String refreshToken,
