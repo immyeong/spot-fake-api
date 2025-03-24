@@ -1,6 +1,7 @@
 package spot.fakeApi.domain.login.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import spot.fakeApi.domain.login.dto.response.LoginResponseDto;
 import spot.fakeApi.domain.login.entity.Token;
@@ -11,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoginFakeApiService {
 
     private final JwtUtil jwtUtil;
@@ -22,6 +24,7 @@ public class LoginFakeApiService {
         String accessToken = jwtUtil.createAccessToken(memberIdToLong);
         String refreshToken = jwtUtil.createRefreshToken(memberIdToLong);
         saveToken(memberIdToLong, accessToken, refreshToken);
+        log.info("fake API Server : 토큰이 발급되었습니다.");
 
         return LoginResponseDto.create(accessToken, refreshToken);
     }

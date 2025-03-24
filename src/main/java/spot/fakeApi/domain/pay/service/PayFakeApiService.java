@@ -1,6 +1,7 @@
 package spot.fakeApi.domain.pay.service;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import spot.fakeApi.domain.pay.dto.request.PayApproveRequestDto;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@Slf4j
 public class PayFakeApiService {
 
     private Map<String, Tid> pcUrlTid = new ConcurrentHashMap<>();
@@ -38,6 +40,7 @@ public class PayFakeApiService {
         PayItem payItem = createPayItem(payReadyRequestDto.partner_order_id(), payReadyRequestDto.partner_user_id(), payReadyRequestDto.item_name(), payReadyRequestDto.total_amount(), payReadyRequestDto.quantity());
 
         saveInfo(tid, pcUrl, mobileUrl, payItem);
+        log.info("fake API Server : 결제 준비가 성공했습니다.");
         return PayReadyResponseDto.create(tid, mobileUrl, pcUrl);
     }
 
@@ -52,6 +55,7 @@ public class PayFakeApiService {
         if(payItem == null) throw new GlobalException(ErrorCode.INVALID_TID);
         pgTokenMap.put(pgToken, 1);
 
+        log.info("fake API Server : 결제 승인이 성공했습니다.");
         return PayApproveResponseDto.fromPayItem(payItem);
     }
 
@@ -66,6 +70,7 @@ public class PayFakeApiService {
 
         payItemMap.remove(payCancelRequestDto.tid());
 
+        log.info("fake API Server : 결제가 실패되었습니다.");
         return PayCancelResponseDto.create(payItem.getItemName(), payItem.getTotalAmount());
     }
 
