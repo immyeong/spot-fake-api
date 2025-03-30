@@ -34,6 +34,8 @@ public class SwaggerConfig {
                 );
 
         return new OpenAPI()
+                .addServersItem(new Server().url("http://43.200.170.145:8080")
+                        .description("immyeong EC2 Server URL"))
                 .addServersItem(new Server().url("https://ilmatch.net")
                         .description("Default Server URL"))
                 .addServersItem(new Server().url("http://localhost:8080")
