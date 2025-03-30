@@ -45,11 +45,31 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/spot-fake-api:${{ github.sha }}
           platforms: linux/amd64,linux/arm64
 
-      - name: Save Core GITHUB_SHA
-        run: echo ${{ github.sha }} > core_sha.txt
+      - name: Create SSH key file
+        run: echo "${{ secrets.EC2_SSH_KEY }}" > ssh_key.pem
 
-      - name: Upload Core SHA file
-        uses: actions/upload-artifact@v4
+      - name: Set permissions for SSH key
+        run: chmod 600 ssh_key.pem
+
+      - name: Disable strict host key checking
+        run: |
+          mkdir -p ~/.ssh
+          echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@master
         with:
-          name: core_sha
-          path: core_sha.txt
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu
+
+            echo "🛠 Updating docker-compose.yml with new image tag"
+            sudo sed -i "s|${{ secrets.DOCKERHUB_USERNAME }}/spot-fake-api:.*|${{ secrets.DOCKERHUB_USERNAME }}/spot-fake-api:${{ github.sha }}|" docker-compose.yml
+
+            echo "🔁 Restarting containers"
+            sudo docker-compose down --remove-orphans
+            sudo docker-compose pull
+            sudo docker-compose up -d
+            sudo docker image prune -f
