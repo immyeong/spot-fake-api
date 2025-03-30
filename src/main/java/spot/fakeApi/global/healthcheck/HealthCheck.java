@@ -11,6 +11,6 @@ public class HealthCheck {
     @GetMapping("/health-check")
     public String healthcheck() {
         log.info("health-check/ok");
-        return "ok!";
+        return "ok";
     }
 }
