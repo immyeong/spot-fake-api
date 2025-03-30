@@ -44,7 +44,7 @@ class LoginControllerTest {
 
         ///when ///then
         mockMvc.perform(
-                        get("/api/login/token")
+                        get("/fake-api/login/token")
                                 .param("memberId", String.valueOf(memberId))
                 )
                 .andDo(print())
@@ -57,7 +57,7 @@ class LoginControllerTest {
     void responseTokenWithoutMemberId() throws Exception {
         ///given ///when ///then
         mockMvc.perform(
-                        get("/api/login/token")
+                        get("/fake-api/login/token")
                                 .param("memberId", (String) null)
                 )
                 .andDo(print())
