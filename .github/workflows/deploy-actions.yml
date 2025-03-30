@@ -22,15 +22,15 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        working-directory: ./fakeApi
+        working-directory: ./spot-fake-api
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: ./fakeApi
+        working-directory: ./spot-fake-api
 
       - name: List files in build/libs
         run: ls -R build/libs
-        working-directory: ./fakeApi
+        working-directory: ./spot-fake-api
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -45,9 +45,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./fakeApi
-          file: ./fakeApi/Dockerfile
+          file: ./spot-fake-api/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/fakeApi:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/spot-fake-api:${{ github.sha }}
           platforms: linux/amd64,linux/arm64
 
       - name: Save Core GITHUB_SHA
