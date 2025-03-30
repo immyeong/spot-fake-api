@@ -3,8 +3,8 @@ name: Docker Core Build and Push
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "src/main/java/spot/fakeApi/**"
+    # paths:
+    #   - "src/main/java/spot/fakeApi/**"
 
 jobs:
   build-and-push:
@@ -54,7 +54,7 @@ jobs:
         run: echo ${{ github.sha }} > core_sha.txt
 
       - name: Upload Core SHA file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@latest
         with:
           name: core_sha
           path: core_sha.txt
