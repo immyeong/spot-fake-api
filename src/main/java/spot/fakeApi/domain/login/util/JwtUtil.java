@@ -1,4 +1,4 @@
-package spot.fakeApi.domain.login.token.util;
+package spot.fakeApi.domain.login.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,7 +9,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import spot.fakeApi.domain.login.member.Member;
 import spot.fakeApi.global.Error.format.ErrorCode;
 
 import javax.crypto.SecretKey;
@@ -20,13 +19,17 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    @Value("${spring.jwt.access.token}")
-    private long ACCESS_TOKEN_EXPIRE_TIME;
-    @Value("${spring.jwt.refresh.token}")
-    private long REFRESH_TOKEN_EXPIRE_TIME;
+    private final long accessTokenExpireTime;
+    private final long refreshTokenExpireTime;
 
-    public JwtUtil(@Value("${spring.jwt.secretKey}") String secretKey) {
+    public JwtUtil(
+            @Value("${spring.jwt.secretKey}") String secretKey,
+            @Value("${spring.jwt.access.token}") long accessTokenExpireTime,
+            @Value("${spring.jwt.refresh.token}") long refreshTokenExpireTime
+    ) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
+        this.accessTokenExpireTime = accessTokenExpireTime;
+        this.refreshTokenExpireTime = refreshTokenExpireTime;
     }
 
     public ErrorCode validateToken(String token) {
@@ -52,7 +55,7 @@ public class JwtUtil {
                 .setHeaderParam("typ", "JWT")
                 .setSubject(String.valueOf(memberId))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpireTime))
                 .signWith(secretKey)
                 .compact();
     }
@@ -62,7 +65,7 @@ public class JwtUtil {
                 .setHeaderParam("typ", "JWT")
                 .setSubject(String.valueOf(memberId))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpireTime))
                 .signWith(secretKey)
                 .compact();
     }
