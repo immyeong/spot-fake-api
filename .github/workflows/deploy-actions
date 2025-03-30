@@ -1,7 +1,7 @@
 name: Docker Core Build and Push
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
     paths:
       - "fakeApi/**"
